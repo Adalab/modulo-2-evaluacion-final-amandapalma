@@ -3,7 +3,48 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Series Searcher</title>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+      crossorigin="anonymous"
+    />
   </head>
-  <body></body>
+  <body>
+    <section class="searcher">
+      <h1>Series Searcher</h1>
+      <form>
+        <label for="searchField">Search a serie</label>
+        <!-- elimino el label? -->
+        <input
+          class="js-searchField"
+          type="text"
+          id="searchField"
+          placeholder="write your search details here"
+        />
+        <input class="js-searchButton" type="submit" value="search" />
+        <!-- vale un button en lugar de ese input? -->
+      </form>
+    </section>
+    <section class="favorites">
+      <h3>My Favorite Series <i class="far fa-heart"></i></h3>
+      <ul class="js-favorite-list-container">
+        <!-- <li class="js-favorite-item-container">
+                  <div class="js-favorite-item-img"></div>
+                  <h4 class="js-favorite-item-name"></h4>
+                </li> -->
+      </ul>
+      <button class="js-reset-favorites"></button>
+    </section>
+    <section class="results">
+      <h2>Search Results</h2>
+      <ul class="js-results-list-container">
+        <!-- <li class="js-result-item-container">
+                  <div class="js-result-item-img"></div>
+                  <h4 class="js-result-item-name"></h4>
+                </li> -->
+      </ul>
+    </section>
+  </body>
 </html>
