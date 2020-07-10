@@ -9,19 +9,22 @@ body {
   font-family: sans-serif;
 }
 
-.markFavorite {
+.favorite {
   background-color: gold;
   color: violet;
+  padding: 20px;
+  border-radius: 10%;
 }
 
-.itemCard {
-  border: 3px solid blue;
+.default {
   background-color: lightgreen;
   color: darkred;
+  padding: 20px;
+  border-radius: 10%;
 }
 
 .itemImg {
-  border: 3px solid green;
+  border: 3px solid blue;
 }
 
 .itemName {

@@ -12,10 +12,10 @@ const searchButton = document.querySelector(".js-searchButton");
 let films = [];
 let favorites = [];
 
-// (2) Petición al API, para obtener los datos de las películas. Guardamos los datos en la variable 'films', previamente declarada globalmente.
+// (2) Petición al API, para obtener los datos de las películas. Asignamos los datos a la variable 'films', que previamente hemos declarado a nivel global.
 
 function getDataFromApi() {
-  //campo de búsqueda
+  //Referencia al campo de búsqueda y obtención de su valor, que guardamos en una constante para filtrar la petición al servidor por el dato introducido por el usuario.
   const searchField = document.querySelector(".js-searchField");
   const searchValue = searchField.value;
   // console.log(searchValue);
@@ -31,16 +31,28 @@ function getDataFromApi() {
 function paintResults() {
   let codeHTML = "";
   let favClass;
+  // console.log(favorites);
 
   for (const film of films) {
-    // if (true) {
-    //   favClass = "fav";
-    // } else {
-    //   favClass = "";
-    // }
+    //Comprobamos si el item está guardado en nuestro array favoritos, si no está, se le aplica el estilo por defecto del item. Si sí está, se le aplica el estilo de favorito.
+    const isFavorite = favorites.find(
+      (favorite) => favorite.show.id === film.show.id
+    );
+    // console.log(isFavorite);
+    // console.log(favorites);
+
+    if (isFavorite === true) {
+      favClass = "favorite";
+      // addAsFavorite();
+    } else {
+      favClass = "default";
+    }
+    //recorremos el array films y pintamos el código html relativo a cada item
     codeHTML += `<li class="js-result-item ${favClass}" id= "${film.show.id}">`;
     codeHTML += `<div class = "js-result-item-card itemCard" >`;
     codeHTML += `<div class ="itemImg">`;
+
+    //si el item no tiene imagen le establecemos una imagen por defecto
     if (film.show.image !== null) {
       codeHTML += `<img class ="js-result-item-img img" src="${film.show.image.medium}" alt="alt="${film.show.name} image">`;
     } else {
@@ -51,25 +63,18 @@ function paintResults() {
     codeHTML += `<i id="js-result-item-heart${film.show.id}" class="far fa-heart itemHeart"></i>`;
     codeHTML += `</div>`;
     codeHTML += `</li>`;
-
-    // for (film of films) {
-    //   if (film.show.id === ) {
-
-    //   }
-
-    // }
   }
   // referencia al ul del HTML
   const resultsList = document.querySelector(".js-results-list-container");
 
   // pintamos en el elemento ul de mi html todo el código que hemos definido arriba y hemos guardado en codeHTML
-  //REVISAR!!! Para eliminar los resultados de la búsqueda anterior y sobreescribir los nuevos
+  //REVISAR EL CONDICIONAL!!! Para eliminar los resultados de la búsqueda anterior y sobreescribir los nuevos. FUNCIONA PERO NO ENTIENDO MUY BIEN POR QUE´
 
   if ((resultsList.innerHTML = " ")) {
     resultsList.innerHTML += codeHTML;
   }
 
-  console.log(resultsList.innerHTML);
+  // console.log(resultsList.innerHTML);
   listenFilmClicks();
 }
 
@@ -79,7 +84,7 @@ searchButton.addEventListener("click", handleSearch);
 // función manejadora de la búsqueda
 function handleSearch(ev) {
   ev.preventDefault();
-  console.log("handleSearch funciona");
+  // console.log("handleSearch funciona");
 
   getDataFromApi();
 }
@@ -96,32 +101,77 @@ function handleSearch(ev) {
 
 function listenFilmClicks() {
   const filmItems = document.querySelectorAll(".js-result-item");
-  console.log(filmItems);
+  // console.log(filmItems);
 
   for (const filmItem of filmItems) {
-    filmItem.addEventListener("click", handleFilmClick);
+    filmItem.addEventListener("click", addAsFavorite);
   }
-  console.log("listenFilmClicks funciona");
-}
-
-function handleFilmClick() {
-  console.log("handleFilmClick funciona");
+  // console.log("listenFilmClicks funciona");
 }
 
 // Necesitamos identificar la película concreta clickada
-// const handleFilmClick = (ev) => {
-//   //El id de la película es un identificador único, por eso necesitamos obtener ese id.
-//   const clickedId = Number(ev.currentTarget.id);
-//   //Buscamos la película que tenga ese id concreto
-//   const film = films.find((filmItem) => filmItem.id === clickedId);
-//   favorites.push(film);
-//   console.log(favorites);
-// };
+const addAsFavorite = (ev) => {
+  //El id de la película es un identificador único, por eso necesitamos obtener ese id, y lo pasamos a valor numérico con parseInt, ya que en nuestro array es un valor numérico.
+  const clickedId = parseInt(ev.currentTarget.id);
 
-// function handleFavorite() {
-//   markAsFavorite();
-//   paintFavorite();
-// }
+  for (const film of films) {
+    if (film.show.id === clickedId) {
+      favorites.push(film);
+      console.log(favorites);
+      paintFavorites();
+    }
+  }
+};
+
+const paintFavorites = () => {
+  let codeHTML = "";
+  let favClass;
+  // console.log(favorites);
+
+  for (const favorite of favorites) {
+    // const isFavorite = favorites.find(
+    //   (favorite) => favorite.show.id === film.show.id
+    // );
+    // // console.log(isFavorite);
+    // // console.log(favorites);
+
+    // if (isFavorite === true) {
+    //   favClass = "favorite";
+    //   // addAsFavorite();
+    // } else {
+    //   favClass = "default";
+    // }
+
+    //recorremos el array favorites y pintamos el código html relativo a cada item
+    codeHTML += `<li class="js-favorite-item ${favClass}" id= "${favorite.show.id}">`;
+    codeHTML += `<div class = "js-favorite-item-card itemCard" >`;
+    codeHTML += `<div class ="itemImg">`;
+
+    //si el item no tiene imagen le establecemos una imagen por defecto
+    if (favorite.show.image !== null) {
+      codeHTML += `<img class ="js-favorite-item-img img" src="${favorite.show.image.medium}" alt="alt="${favorite.show.name} image">`;
+    } else {
+      codeHTML += `<img class ="js-favorite-item-img img" src="https://via.placeholder.com/210x295/ffffff/666666/?" alt="${favorite.show.name} image">`;
+    }
+    codeHTML += `</div> `;
+    codeHTML += `<h4 class="js-favorite-item-name itemName">${favorite.show.name}  </h4>`;
+    codeHTML += `<i id="js-favorite-item-cross${favorite.show.id}" class="fa fa-window-close itemCross" aria-hidden="true"></i>`;
+    codeHTML += `</div>`;
+    codeHTML += `</li>`;
+  }
+  // referencia al ul del HTML
+  const favoritesList = document.querySelector(".js-favorite-list-container");
+
+  // pintamos en el elemento ul de mi html todo el código que hemos definido arriba y hemos guardado en codeHTML
+  //REVISAR EL CONDICIONAL!!! Para eliminar los resultados de la búsqueda anterior y sobreescribir los nuevos. FUNCIONA PERO NO ENTIENDO MUY BIEN POR QUE´
+
+  if ((favoritesList.innerHTML = " ")) {
+    favoritesList.innerHTML += codeHTML;
+  }
+
+  // console.log(favoritesList.innerHTML);
+  listenFilmClicks();
+};
 
 getDataFromApi();
 paintResults();
