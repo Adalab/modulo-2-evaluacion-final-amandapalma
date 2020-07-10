@@ -10,6 +10,8 @@ const searchButton = document.querySelector(".js-searchButton");
 //campo de búsqueda
 const searchField = document.querySelector(".js-searchField");
 const searchValue = searchField.value;
+// console.log(searchValue);
+// PROBLEMA: NO RECONOCE EL VALOR DEL CAMPO, funciona si le doy un value en el propio input.
 
 //ARRAYS
 
@@ -50,11 +52,11 @@ function paintResults() {
 }
 
 // listener para escuchar evento click en el botón search
-searchButton.addEventListener("click", handleSearch());
+searchButton.addEventListener("click", handleSearch);
 
 // función manejadora de la búsqueda
 function handleSearch(ev) {
-  // ev.preventDefault(); //PROBLEMA. RECONOCE EV COMO UNDEFINED
+  ev.preventDefault();
   console.log("la función manejadora funciona");
 
   getDataFromApi();
