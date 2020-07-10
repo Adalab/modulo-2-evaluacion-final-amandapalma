@@ -34,12 +34,17 @@ function paintResults() {
 
   for (const film of films) {
     codeHTML += `<li class="js-result-item">`;
-    codeHTML += `<img class ="js-result-item-img" src="${film.show.image.medium}" alt="imagen de ${film.show.name}"></div> `;
-    codeHTML += `<h4 class="js-result-item-name">${film.show.name}</h4>`;
+    codeHTML += `<div id= "${film.show.id}" class = "js-result-item-card itemCard" >`;
+    codeHTML += `<div class ="itemImg">`;
+    codeHTML += `<img class ="js-result-item-img img" src="${film.show.image.medium}" alt="imagen de ${film.show.name}">`;
+    codeHTML += `</div> `;
+    codeHTML += `<h4 class="js-result-item-name itemName">${film.show.name}  </h4>`;
+    codeHTML += `<i id="js-result-item-heart${film.show.id}" class="far fa-heart itemHeart"></i>`;
+    codeHTML += `</div>`;
     codeHTML += `</li>`;
   }
   // referencia al ul del HTML
-  const resultsList = document.querySelector(".js-favorite-list-container");
+  const resultsList = document.querySelector(".js-results-list-container");
 
   resultsList.innerHTML += codeHTML;
 }
