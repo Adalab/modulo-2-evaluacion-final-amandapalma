@@ -22,7 +22,22 @@ function getDataFromApi() {
   fetch(`http://api.tvmaze.com/search/shows?q=${searchValue}`)
     .then((response) => response.json())
     .then((data) => {
-      films = data;
+      films = [];
+      for (const film of data) {
+        const filmsObject = {
+          id: film.show.id,
+          name: film.show.name,
+          image: film.show.image,
+        };
+
+        if (film.show.image === null) {
+          filmsObject.image =
+            "https://via.placeholder.com/210x295/ffffff/666666/?text=TV";
+        } else {
+          filmsObject.image = film.show.image.medium;
+        }
+        films.push(filmsObject);
+      }
       paintResults();
     });
 }
@@ -35,9 +50,7 @@ function paintResults() {
 
   for (const film of films) {
     //Comprobamos si el item está guardado en nuestro array favoritos, si no está, se le aplica el estilo por defecto del item. Si sí está, se le aplica el estilo de favorito.
-    const isFavorite = favorites.find(
-      (favorite) => favorite.show.id === film.show.id
-    );
+    const isFavorite = favorites.find((favorite) => favorite.id === film.id);
     // console.log(isFavorite);
     // console.log(favorites);
 
@@ -48,19 +61,20 @@ function paintResults() {
       favClass = "default";
     }
     //recorremos el array films y pintamos el código html relativo a cada item
-    codeHTML += `<li class="js-result-item ${favClass}" id= "${film.show.id}">`;
+    codeHTML += `<li class="js-result-item ${favClass}" id= "${film.id}">`;
     codeHTML += `<div class = "js-result-item-card itemCard" >`;
     codeHTML += `<div class ="itemImg">`;
 
-    //si el item no tiene imagen le establecemos una imagen por defecto
-    if (film.show.image !== null) {
-      codeHTML += `<img class ="js-result-item-img img" src="${film.show.image.medium}" alt="alt="${film.show.name} image">`;
-    } else {
-      codeHTML += `<img class ="js-result-item-img img" src="https://via.placeholder.com/210x295/ffffff/666666/?" alt="${film.show.name} image">`;
-    }
+    // //si el item no tiene imagen le establecemos una imagen por defecto
+    // if (film.show.image !== null) {
+    //   codeHTML += `<img class ="js-result-item-img img" src="${film.show.image.medium}" alt="alt="${film.show.name} image">`;
+    // } else {
+    //   codeHTML += `<img class ="js-result-item-img img" src="https://via.placeholder.com/210x295/ffffff/666666/?text=TV" alt="${film.show.name} image">`;
+    // }
+    codeHTML += `<img class ="js-result-item-img img" src="${film.image}" alt="alt="${film.name} image">`;
     codeHTML += `</div> `;
-    codeHTML += `<h4 class="js-result-item-name itemName">${film.show.name}  </h4>`;
-    codeHTML += `<i id="js-result-item-heart${film.show.id}" class="far fa-heart itemHeart"></i>`;
+    codeHTML += `<h4 class="js-result-item-name itemName">${film.name}  </h4>`;
+    codeHTML += `<i id="js-result-item-heart${film.id}" class="far fa-heart itemHeart"></i>`;
     codeHTML += `</div>`;
     codeHTML += `</li>`;
   }
@@ -111,16 +125,24 @@ function listenFilmClicks() {
 
 // Necesitamos identificar la película concreta clickada
 const addAsFavorite = (ev) => {
-  //El id de la película es un identificador único, por eso necesitamos obtener ese id, y lo pasamos a valor numérico con parseInt, ya que en nuestro array es un valor numérico.
+  //El id de la película es un identificador único, así que necesitamos obtenerlo para localizar la película clickada.En el array, el id es un tipo de dato numérico, por eso debemos cambiar su formato a número con ParseInt.
   const clickedId = parseInt(ev.currentTarget.id);
+  const clickedFilm = ev.currentTarget;
+  console.log(clickedFilm);
+  for (const favorite of favorites) {
+    //Si el id de la película clicada es el mismo que el de alguna película en favoritos, se elimina esa película del array favoritos
+    //Si el id de la película clicada no es el mismo, se añade esa película al array favoritos.
 
-  for (const film of films) {
-    if (film.show.id === clickedId) {
+    if (clickedId === favorite.id) {
+      favorites.splice(film);
+      //elimina esa película de favoritos
+    } else {
+      //añade esa película a favoritos
       favorites.push(film);
-      console.log(favorites);
-      paintFavorites();
     }
   }
+  paintFavorites();
+  setLocalStorage();
 };
 
 const paintFavorites = () => {
@@ -143,22 +165,24 @@ const paintFavorites = () => {
     // }
 
     //recorremos el array favorites y pintamos el código html relativo a cada item
-    codeHTML += `<li class="js-favorite-item ${favClass}" id= "${favorite.show.id}">`;
+    codeHTML += `<li class="js-favorite-item ${favClass}" id= "${favorite.id}">`;
     codeHTML += `<div class = "js-favorite-item-card itemCard" >`;
     codeHTML += `<div class ="itemImg">`;
 
     //si el item no tiene imagen le establecemos una imagen por defecto
-    if (favorite.show.image !== null) {
-      codeHTML += `<img class ="js-favorite-item-img img" src="${favorite.show.image.medium}" alt="alt="${favorite.show.name} image">`;
-    } else {
-      codeHTML += `<img class ="js-favorite-item-img img" src="https://via.placeholder.com/210x295/ffffff/666666/?" alt="${favorite.show.name} image">`;
-    }
+    // if (favorite.show.image !== null) {
+    //   codeHTML += `<img class ="js-favorite-item-img img" src="${favorite.show.image.medium}" alt="alt="${favorite.show.name} image">`;
+    // } else {
+    //   codeHTML += `<img class ="js-favorite-item-img img" src="https://via.placeholder.com/210x295/ffffff/666666/?" alt="${favorite.show.name} image">`;
+    // }
+    codeHTML += `<img class ="js-favorite-item-img img" src="${favorite.image}" alt="alt="${favorite.name} image">`;
     codeHTML += `</div> `;
-    codeHTML += `<h4 class="js-favorite-item-name itemName">${favorite.show.name}  </h4>`;
-    codeHTML += `<i id="js-favorite-item-cross${favorite.show.id}" class="fa fa-window-close itemCross" aria-hidden="true"></i>`;
+    codeHTML += `<h4 class="js-favorite-item-name itemName">${favorite.name}  </h4>`;
+    codeHTML += `<i id="js-favorite-item-cross${favorite.id}" class="fa fa-window-close itemCross" aria-hidden="true"></i>`;
     codeHTML += `</div>`;
     codeHTML += `</li>`;
   }
+
   // referencia al ul del HTML
   const favoritesList = document.querySelector(".js-favorite-list-container");
 
@@ -173,5 +197,32 @@ const paintFavorites = () => {
   listenFilmClicks();
 };
 
+//LOCAL STORAGE
+
+const setLocalStorage = () => {
+  const FavoritesString = JSON.stringify(favorites);
+  localStorage.setItem("favorite films", FavoritesString);
+};
+
+const getLocalStorage = () => {
+  const FavoritesString = localStorage.getItem("favorite films");
+  if (FavoritesString !== null) {
+    favorites = JSON.parse(FavoritesString);
+    paintFavorites();
+  }
+};
+
+//   if (LocalStorageData !== null) {
+//     LocalStorageData.show.name = favorites.show.name;
+//     // handleUpdateJob();
+
+//     LocalStorageData.id = favorites.show.id;
+//     // handleUpdateEmail();
+//     LocalStorageData.image = favorites.show.image.medium;
+//   }
+// };
+
+//Al arrancar la página
 getDataFromApi();
+getLocalStorage();
 paintResults();
