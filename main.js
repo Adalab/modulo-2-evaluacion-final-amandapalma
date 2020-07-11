@@ -49,7 +49,7 @@ function paintResults() {
   // Selector del elemento <ul> de la sección 'results'del DOM
   const resultsList = document.querySelector(".js-results-list-container");
 
-  //Reseteo cualquier
+  //Reseteo cualquier código que hubiese previamente para que los resultados de la búsqueda no se pinten
   resultsList.innerHTML = "";
 
   for (const film of films) {
@@ -162,7 +162,7 @@ const paintFavorites = () => {
   favoritesList.innerHTML += codeHTML;
 
   listenFilmClicks();
-  // listenRemoveAll();
+  listenRemoveAll();
   // listenRemoveFavorite();
 };
 
@@ -182,8 +182,8 @@ const getLocalStorage = () => {
   const FavoritesString = localStorage.getItem("favorite films");
   if (FavoritesString !== null) {
     favorites = JSON.parse(FavoritesString);
-    paintFavorites();
   }
+  paintFavorites();
 };
 
 //FASE 5: BORRAR FAVORITOS
@@ -238,11 +238,13 @@ const removeAll = () => {
   localStorage.setItem("favorite films", emptyArray);
   favorites = emptyArray;
   // favorites.splice(0, favorites.length);
+  paintFavorites();
+  paintResults();
 };
 
 //-------------------------------------------------------
 //Al arrancar la página
-getDataFromApi();
+// getDataFromApi();
 getLocalStorage();
 // paintResults();
 // listenRemoveAll();
