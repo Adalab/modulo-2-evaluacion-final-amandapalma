@@ -13,7 +13,7 @@ let favorites = [];
 function getDataFromApi() {
   // Necesitamos:
   //1. Selector del campo de búsqueda en el DOM
-  //2. Obtener el valor de ese campo, que guardamos en una constante, para filtrar la petición al servidor, en función del valor que introduzca el usuario en la búsqueda.
+  //2. Obtener el valor de ese campo para filtrar la petición al servidor en función de los datos introducidos por el usuario en la búsqueda. Ese valor lo guardamos en la constante constante searchValue.
   const searchField = document.querySelector(".js-searchField");
   const searchValue = searchField.value;
 
@@ -46,11 +46,17 @@ function paintResults() {
   let codeHTML = "";
   let favClass;
 
+  // Selector del elemento <ul> de la sección 'results'del DOM
+  const resultsList = document.querySelector(".js-results-list-container");
+
+  //Reseteo cualquier
+  resultsList.innerHTML = "";
+
   for (const film of films) {
     //Comprobamos si el item está guardado en nuestro array favoritos. Si no está, se le aplica el estilo 'default'. Si sí está, se le aplica el estilo de 'favorito'.
     const isFavorite = favorites.find((favorite) => favorite.id === film.id);
 
-    if (isFavorite === true) {
+    if (isFavorite) {
       favClass = "favorite";
     } else {
       favClass = "default";
@@ -66,16 +72,12 @@ function paintResults() {
     codeHTML += `</div>`;
     codeHTML += `</li>`;
   }
-  // Selector del elemento <ul> de la sección 'results'del DOM
-  const resultsList = document.querySelector(".js-results-list-container");
 
   // pintamos dentro del elemento <ul> del DOM todo el código que hemos definido y guardado en codeHTML
-  if ((resultsList.innerHTML = " ")) {
-    resultsList.innerHTML += codeHTML;
-  }
+  resultsList.innerHTML = codeHTML;
+
   listenFilmClicks();
 }
-//REVISAR EL CONDICIONAL!!! La intención era sobreescribir los nuevos resultados de la búqueda sobre los resultados previos. FUNCIONA PERO NO ENTIENDO MUY BIEN POR QUE´ :)
 
 //(1) Función listener para escuchar el evento 'click' en el botón search.
 
@@ -102,9 +104,9 @@ function listenFilmClicks() {
   //Selector de todos los elementos resultantes de la búsqueda
   const filmItems = document.querySelectorAll(".js-result-item");
 
-  // Función Listener, que recorre el array de resultados y escucha el evento 'click' en cada elemento para ejecutar a la función que añade ese elemento a favoritos (addAsFavorites)
+  // Función Listener, que recorre el array de resultados y escucha el evento 'click' en cada elemento para ejecutar a la función que añade ese elemento a favoritos (handleResultsClick)
   for (const filmItem of filmItems) {
-    filmItem.addEventListener("click", addAsFavorite);
+    filmItem.addEventListener("click", addOrRemoveFavorite);
   }
 }
 
@@ -114,41 +116,37 @@ function listenFilmClicks() {
 //Si el id de la película clicada es el mismo que el de alguna película en favoritos, se elimina esa película del array favoritos
 //Si el id de la película clicada no es el mismo, se añade esa película al array favoritos.
 
-//----opción 1:
-// const addAsFavorite = (ev) => {
-//   const clickedId = parseInt(ev.currentTarget.id);
-
-//   const favoriteItem = favorites.find((filmItem) => filmItem.id === clickedId);
-//   const filmItem = films.find((filmItem) => filmItem.id === clickedId);
-//   if (filmItem === undefined) {
-//     favorites.push(film);
-//   } else {
-//     favorites.splice(film);
-//   }
-//   paintFavorites();
-//   setLocalStorage();
-// };
-
-//---opción 2:
-const addAsFavorite = (ev) => {
+function addOrRemoveFavorite(ev) {
   const clickedId = parseInt(ev.currentTarget.id);
+  const foundedFavoriteIndex = favorites.findIndex(
+    (favorite) => favorite.id === clickedId
+  );
 
-  for (const film of films) {
-    if (film.id === clickedId) {
-      favorites.push(film);
-    }
+  if (foundedFavoriteIndex === -1) {
+    const film = films.find((film) => film.id === clickedId);
+    favorites.push(film);
+
+    //además elimina la clase default' y añade la clase 'favorite'  del <li> de results
+  } else {
+    favorites.splice(foundedFavoriteIndex, 1);
+    //además elimina la clase 'favorite' y añade la clase 'default' del <li> de results
   }
-  paintFavorites();
   setLocalStorage();
-};
+  paintFavorites();
+  paintResults();
+}
 
 const paintFavorites = () => {
   let codeHTML = "";
   let favClass;
-  // console.log(favorites);
+
+  // Selector del elemento <ul> de la sección 'favorites' del DOM
+  const favoritesList = document.querySelector(".js-favorite-list-container");
+
+  favoritesList.innerHTML = "";
 
   for (const favorite of favorites) {
-    //recorremos el array favorites y pintamos el código html relativo a cada item
+    //Recorremos el array favorites y pintamos el código html relativo a cada item
     codeHTML += `<li class="js-favorite-item ${favClass}" id= "${favorite.id}">`;
     codeHTML += `<div class = "js-favorite-item-card itemCard" >`;
     codeHTML += `<div class ="itemImg">`;
@@ -160,29 +158,26 @@ const paintFavorites = () => {
     codeHTML += `</li>`;
   }
 
-  // Selector del elemento <ul> de la sección 'favorites' del DOM
-  const favoritesList = document.querySelector(".js-favorite-list-container");
-
-  // pintamos dentro del elemento <ul> del DOM todo el código que hemos definido y guardado en codeHTML
-
-  if ((favoritesList.innerHTML = " ")) {
-    favoritesList.innerHTML += codeHTML;
-  }
+  // Pintamos dentro del elemento <ul> del DOM todo el código que hemos definido y guardado en codeHTML
+  favoritesList.innerHTML += codeHTML;
 
   listenFilmClicks();
+  // listenRemoveAll();
+  // listenRemoveFavorite();
 };
-
-//REVISAR EL CONDICIONAL!!! La intención era sobreescribir los nuevos resultados de la búqueda sobre los resultados previos. FUNCIONA PERO NO ENTIENDO MUY BIEN POR QUE´ :)
 
 //FASE 4: ALMACENAR LISTA DE FAVORITOS EN LOCALSTORAGE
 
 //LOCAL STORAGE
+
+//En localStorage solo podemos guardar datos de tipo primitivo. Como en este caso necesitamos guardar un array, debemos convertirlo a una cadena para poder guardarlo.
 
 const setLocalStorage = () => {
   const FavoritesString = JSON.stringify(favorites);
   localStorage.setItem("favorite films", FavoritesString);
 };
 
+// JSON.parse cambia a formato JSON los datos que previamente habíamos transformado en string para poder almacenalros en LocalSotrage.
 const getLocalStorage = () => {
   const FavoritesString = localStorage.getItem("favorite films");
   if (FavoritesString !== null) {
@@ -195,10 +190,59 @@ const getLocalStorage = () => {
 
 // Eliminar un elemento de la lista de favoritos al clickar sobre el icono 'cross'
 
+// //Función listener para escuchar el evento 'click' sobre closeIcon
+// const closeIconListener = () => {
+//   // Selector del icono 'cross' en el DOM
+//   const closeIcon = document.querySelector(
+//     `.js-favorite-item-cross${favorite.id}`
+//   );
+//   for (const favorite of favorites) {
+//     closeIcon.addEventListener("click", removeFavorite);
+//   }
+// };
+
+// // Función para eliminar el item de la lista de favoritos
+
+// // const removeFavorite = (ev) => {
+// const clickedCloseIcon = ev.currentTarget;
+// const clickedCloseIconParent = clickedCloseIcon.parentElement;
+// const clickedCloseIconGrandpa = clickedCloseIconParent.parentElement;
+// const clickedCloseIconIndex = favorites.indexOf(clickedCloseIconGrandpa);
+// console.log(clickedCloseIconGrandpa);
+
+// //   if (clickedCloseIconIndex === ) {
+// //     favorites.splice(clickedCloseIconIndex, 1);
+// //     heartParent.classList.remove("backgroundColor");
+// //     heartUser.classList.add("far");
+// //     heartUser.classList.remove("fas");
+// //   } else {
+// //     // favorites.push(heartParent);
+// //     // heartParent.classList.add("backgroundColor");
+// //     // heartUser.classList.remove("far");
+// //     // heartUser.classList.add("fas");
+// //   }
+// //   console.log(favorites);
+// // };
+
 // Eliminar todos los elementos de la lista favoritos al clickar sobre el botón 'delete all favorites'
+
+// Borrar los datos del localStorage y asigno a la variable 'favorites' un array vacío.
+const listenRemoveAll = () => {
+  const resetBtn = document.querySelector(".js-reset-favorites");
+  resetBtn.addEventListener("click", removeAll);
+  console.log("listenRemoveAll funciona");
+};
+
+const removeAll = () => {
+  const emptyArray = [];
+  localStorage.setItem("favorite films", emptyArray);
+  favorites = emptyArray;
+  // favorites.splice(0, favorites.length);
+};
 
 //-------------------------------------------------------
 //Al arrancar la página
 getDataFromApi();
 getLocalStorage();
-paintResults();
+// paintResults();
+// listenRemoveAll();
