@@ -134,6 +134,7 @@ function addOrRemoveFavorite(ev) {
   setLocalStorage();
   paintFavorites();
   paintResults();
+  // closeIconListener();
 }
 
 const paintFavorites = () => {
@@ -153,7 +154,7 @@ const paintFavorites = () => {
     codeHTML += `<img class ="js-favorite-item-img img" src="${favorite.image}" alt="alt="${favorite.name} image">`;
     codeHTML += `</div> `;
     codeHTML += `<h4 class="js-favorite-item-name itemName">${favorite.name}  </h4>`;
-    codeHTML += `<i id="js-favorite-item-cross${favorite.id}" class="fa fa-window-close itemCross" aria-hidden="true"></i>`;
+    codeHTML += `<i id="${favorite.id}" class="js-favorite-closeIcon fa fa-window-close closeIcon" aria-hidden="true"></i>`;
     codeHTML += `</div>`;
     codeHTML += `</li>`;
   }
@@ -163,7 +164,7 @@ const paintFavorites = () => {
 
   listenFilmClicks();
   listenRemoveAll();
-  // listenRemoveFavorite();
+  ListenCloseIcon();
 };
 
 //FASE 4: ALMACENAR LISTA DE FAVORITOS EN LOCALSTORAGE
@@ -188,63 +189,48 @@ const getLocalStorage = () => {
 
 //FASE 5: BORRAR FAVORITOS
 
-// Eliminar un elemento de la lista de favoritos al clickar sobre el icono 'cross'
-
-// //Función listener para escuchar el evento 'click' sobre closeIcon
-// const closeIconListener = () => {
-//   // Selector del icono 'cross' en el DOM
-//   const closeIcon = document.querySelector(
-//     `.js-favorite-item-cross${favorite.id}`
-//   );
-//   for (const favorite of favorites) {
-//     closeIcon.addEventListener("click", removeFavorite);
-//   }
-// };
-
-// // Función para eliminar el item de la lista de favoritos
-
-// // const removeFavorite = (ev) => {
-// const clickedCloseIcon = ev.currentTarget;
-// const clickedCloseIconParent = clickedCloseIcon.parentElement;
-// const clickedCloseIconGrandpa = clickedCloseIconParent.parentElement;
-// const clickedCloseIconIndex = favorites.indexOf(clickedCloseIconGrandpa);
-// console.log(clickedCloseIconGrandpa);
-
-// //   if (clickedCloseIconIndex === ) {
-// //     favorites.splice(clickedCloseIconIndex, 1);
-// //     heartParent.classList.remove("backgroundColor");
-// //     heartUser.classList.add("far");
-// //     heartUser.classList.remove("fas");
-// //   } else {
-// //     // favorites.push(heartParent);
-// //     // heartParent.classList.add("backgroundColor");
-// //     // heartUser.classList.remove("far");
-// //     // heartUser.classList.add("fas");
-// //   }
-// //   console.log(favorites);
-// // };
-
 // Eliminar todos los elementos de la lista favoritos al clickar sobre el botón 'delete all favorites'
 
 // Borrar los datos del localStorage y asigno a la variable 'favorites' un array vacío.
 const listenRemoveAll = () => {
   const resetBtn = document.querySelector(".js-reset-favorites");
   resetBtn.addEventListener("click", removeAll);
-  console.log("listenRemoveAll funciona");
+  // console.log("listenRemoveAll funciona");
 };
 
 const removeAll = () => {
-  const emptyArray = [];
-  localStorage.setItem("favorite films", emptyArray);
-  favorites = emptyArray;
-  // favorites.splice(0, favorites.length);
+  favorites = [];
+
   paintFavorites();
+  setLocalStorage();
   paintResults();
 };
 
-//-------------------------------------------------------
+// Eliminar un elemento de la lista de favoritos al clickar sobre el icono 'cross'
+
+//Función listener para escuchar el evento 'click' sobre closeIcon
+function ListenCloseIcon() {
+  //Selector de todos los close icons del DOM
+  const closeIcons = document.querySelectorAll(".js-favorite-closeIcon");
+
+  for (const closeIcon of closeIcons) {
+    closeIcon.addEventListener("click", removeFavorite);
+  }
+}
+
+function removeFavorite(ev) {
+  console.log("removeFavorite funciona");
+  const closeIconClickedId = parseInt(ev.target.id);
+  const foundedFavoriteIndex = favorites.findIndex(
+    (favorite) => favorite.id === closeIconClickedId
+  );
+  console.log(closeIconClickedId);
+  favorites.splice(foundedFavoriteIndex, 1);
+
+  paintFavorites();
+  setLocalStorage();
+  paintResults();
+}
+
 //Al arrancar la página
-// getDataFromApi();
 getLocalStorage();
-// paintResults();
-// listenRemoveAll();
