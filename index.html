@@ -9,6 +9,10 @@
       integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
       crossorigin="anonymous"
     />
+    <link
+      href="https://fonts.googleapis.com/css?family=Cardo:400,700|Oswald"
+      rel="stylesheet"
+    />
     <link href="./styles/reset.css" rel="stylesheet" />
     <link href="./styles/styles.css" rel="stylesheet" />
     <title>Series Searcher</title>
@@ -16,10 +20,13 @@
   <body>
     <header class="header">
       <div class="logo">
-        <div class="img-box">
-          <img class="img" />
+        <div class="imgBox">
+          <img class="logoImg"
+            src="./images/logo-tarsier-white.png"
+            alt="logo tarsier series searcher"
+          />
         </div>
-        <h1 class="logo-title">Tarsier Series Searcher</h1>
+        <h1 class="logoTitle">Tarsier Series Searcher</h1>
       </div>
     </header>
     <div class="grid">
@@ -28,34 +35,34 @@
           <label for="searchField"></label>
           <!-- elimino el label? -->
           <input
-            class="js-searchField search-field"
+            class="js-searchField searchField"
             type="text"
             id="searchField"
             placeholder=" write your search details here"
           />
-
           <input
-            class="js-searchButton search-button"
+            class="js-searchButton searchButton"
             type="submit"
             value="search"
-          />
+          >
+        </input>
           <!-- probar button en lugar de ese input, para darle más estilos -->
         </form>
       </section>
       <section class="favorites">
-        <h3 class="favorites-title">
+        <h2 class="favoritesTitle">
           My Favorite Series <i class="far fa-heart"></i>
-        </h3>
-        <ul class="js-favorite-list-container">
-          <!-- código html para películas favoritas -->
-        </ul>
-        <button class="js-reset-favorites" value="delete all favorites">
+        </h2>
+        <button class="js-reset-favorites resetButton" value="delete all favorites">
           delete all favorites
         </button>
+        <ul class="js-favorites-list-container">
+          <!-- código html para películas favoritas -->
+        </ul>
       </section>
       <section class="results">
-        <h2 class="results-title">Search Results</h2>
-        <ul class="js-results-list-container">
+        <h2 class="resultsTitle"><i class="fa fa-search" aria-hidden="true"></i> Search Results </h2>
+        <ul class="js-results-list-container resultsList">
           <!-- código html para resultado de películas  -->
         </ul>
 

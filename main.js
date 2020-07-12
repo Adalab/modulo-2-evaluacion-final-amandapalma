@@ -29,8 +29,7 @@ function getDataFromApi() {
         };
 
         if (film.show.image === null) {
-          filmsObject.image =
-            "https://via.placeholder.com/210x295/ffffff/666666/?text=TV";
+          filmsObject.image = "./images/default_image.png";
         } else {
           filmsObject.image = film.show.image.medium;
         }
@@ -49,7 +48,7 @@ function paintResults() {
   // Selector del elemento <ul> de la sección 'results'del DOM
   const resultsList = document.querySelector(".js-results-list-container");
 
-  //Reseteo cualquier código que hubiese previamente para que los resultados de la búsqueda no se pinten
+  //Reseteo cualquier código que hubiese previamente para que los resultados de la búsqueda no se dupliquen
   resultsList.innerHTML = "";
 
   for (const film of films) {
@@ -63,12 +62,12 @@ function paintResults() {
     }
     //recorremos el array films y pintamos el código html relativo a cada item
     codeHTML += `<li class="js-result-item ${favClass}" id= "${film.id}">`;
-    codeHTML += `<div class = "js-result-item-card itemCard" >`;
+    // codeHTML += `<div class = "js-result-item-card itemCard" >`;
     codeHTML += `<div class ="itemImg">`;
     codeHTML += `<img class ="js-result-item-img img" src="${film.image}" alt="alt="${film.name} image">`;
     codeHTML += `</div> `;
-    codeHTML += `<h4 class="js-result-item-name itemName">${film.name}  </h4>`;
-    codeHTML += `<i id="js-result-item-heart${film.id}" class="far fa-heart itemHeart"></i>`;
+    codeHTML += `<h3 class="js-result-item-name itemName">${film.name} </h3>`;
+    // codeHTML += `<i id="${film.id}" class="js-result-item-heart far fa-heart heartItem"></i>`;
     codeHTML += `</div>`;
     codeHTML += `</li>`;
   }
@@ -142,19 +141,20 @@ const paintFavorites = () => {
   let favClass;
 
   // Selector del elemento <ul> de la sección 'favorites' del DOM
-  const favoritesList = document.querySelector(".js-favorite-list-container");
+  const favoritesList = document.querySelector(".js-favorites-list-container");
 
   favoritesList.innerHTML = "";
 
   for (const favorite of favorites) {
     //Recorremos el array favorites y pintamos el código html relativo a cada item
-    codeHTML += `<li class="js-favorite-item ${favClass}" id= "${favorite.id}">`;
-    codeHTML += `<div class = "js-favorite-item-card itemCard" >`;
-    codeHTML += `<div class ="itemImg">`;
-    codeHTML += `<img class ="js-favorite-item-img img" src="${favorite.image}" alt="alt="${favorite.name} image">`;
+    codeHTML += `<li class="js-favorite-item favoriteItem" id= "${favorite.id}">`;
+    // codeHTML += `<div class = "js-favorite-item-card itemCard" >`;
+    codeHTML += `<div class ="favItemImg">`;
+    codeHTML += `<img class ="js-favorite-item-img favImg" src="${favorite.image}" alt="alt="${favorite.name} image">`;
     codeHTML += `</div> `;
-    codeHTML += `<h4 class="js-favorite-item-name itemName">${favorite.name}  </h4>`;
-    codeHTML += `<i id="${favorite.id}" class="js-favorite-closeIcon fa fa-window-close closeIcon" aria-hidden="true"></i>`;
+    codeHTML += `<h3 class="js-favorite-item-name favItemName">${favorite.name}  </h3>`;
+    codeHTML += `<i id="${favorite.id}" class="js-favorite-closeIcon fa fa-times closeIcon" aria-hidden="true"></i>`;
+    // <i class="fa fa-times" aria-hidden="true">fa fa-window-close-</i>
     codeHTML += `</div>`;
     codeHTML += `</li>`;
   }
