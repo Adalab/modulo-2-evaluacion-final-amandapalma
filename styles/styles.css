@@ -15,10 +15,8 @@ ul {
 
 :root {
   /* COLORS*/
-
   --primary-color: #e07fa4;
   --secondary-color: #ffb766;
-  /* --tertiary-color: #68d388; */
   --primary-light-color: #c2edda;
   --secondary-light-color: #f0e4e9;
   --dark-color: black;
@@ -32,8 +30,7 @@ body {
 
 h1,
 h2,
-h3,
-h4 {
+h3 {
   font-family: "Oswald", sans-serif;
 }
 
@@ -46,6 +43,7 @@ h3 {
 }
 
 /* HEADER */
+
 .header {
   color: var(--white-color);
   width: 100%;
@@ -89,13 +87,14 @@ h3 {
 }
 
 /* SECTIONS */
+
 .grid {
   display: grid;
   grid-template-columns: 25% 25% 25% 25%;
   height: 100%;
 }
 
-/* Searcher */
+/* Searcher Section */
 .searcher {
   grid-column: span 4;
   background-color: var(--secondary-light-color);
@@ -131,7 +130,7 @@ h3 {
   background-color: var(--primary-color);
 }
 
-/* Favorites section*/
+/* Favorites Section*/
 .favorites {
   grid-column: span 1;
   background-color: #eaf7ef;
@@ -165,7 +164,7 @@ h3 {
   background-color: var(--secondary-color);
 }
 
-/* Results section*/
+/* Results Section*/
 .results {
   grid-column: span 3;
   background-color: var(--white-color);
@@ -182,7 +181,7 @@ h3 {
 .fa-search {
   color: var(--primary-light-color);
 }
-/* items <ul> */
+/* Results Items List*/
 .resultsList {
   display: flex;
   flex-wrap: wrap;
@@ -191,7 +190,7 @@ h3 {
   align-items: center;
 }
 
-/* item class fav <li> */
+/* Item Class for Favorites */
 .favorite {
   margin-bottom: 20px;
   width: 250px;
@@ -213,7 +212,7 @@ h3 {
   transform: scale(1.05);
 }
 
-/* items class def <li> */
+/* Default Item Class*/
 .default {
   margin-bottom: 20px;
   width: 250px;
@@ -234,7 +233,7 @@ h3 {
   transform: scale(1.05);
 }
 
-/* <div> */
+/* Item Image Box*/
 .itemImg {
   height: 295px;
   width: 210px;
@@ -243,15 +242,15 @@ h3 {
   width: 100%;
   height: auto;
 }
-/* <h3> */
+/* Results Item Title*/
 .itemName {
 }
-/* <i> */
+/* Heart Icon */
 .heartItem {
   color: deeppink;
 }
 
-/* //favorite list elements */
+/* Favorites Items */
 .favoriteItem {
   margin-bottom: 20px;
   width: 250px;
@@ -268,13 +267,8 @@ h3 {
   position: relative;
   box-shadow: 0px 0px 19px 3px rgba(0, 0, 0, 0.27);
 }
-.favItemImg {
-}
 
-.favItemName {
-}
-
-/* <i> */
+/* Favorite Item Close Icon */
 .closeIcon {
   position: absolute;
   height: 20px;

@@ -15,7 +15,7 @@
     />
     <link href="./styles/reset.css" rel="stylesheet" />
     <link href="./styles/styles.css" rel="stylesheet" />
-    <title>Series Searcher</title>
+    <title>Tarsier Series Searcher</title>
   </head>
   <body>
     <header class="header">
@@ -33,7 +33,6 @@
       <section class="searcher">
         <form>
           <label for="searchField"></label>
-          <!-- elimino el label? -->
           <input
             class="js-searchField searchField"
             type="text"
@@ -46,7 +45,6 @@
             value="search"
           >
         </input>
-          <!-- probar button en lugar de ese input, para darle más estilos -->
         </form>
       </section>
       <section class="favorites">
@@ -54,19 +52,17 @@
           My Favorite Series <i class="far fa-heart"></i>
         </h2>
         <button class="js-reset-favorites resetButton" value="delete all favorites">
-          delete all favorites
+          remove all favorites
         </button>
         <ul class="js-favorites-list-container">
-          <!-- código html para películas favoritas -->
+          <!-- aquí se pintará con JS el código de las películas marcadas como favoritas -->
         </ul>
       </section>
       <section class="results">
-        <h2 class="resultsTitle"><i class="fa fa-search" aria-hidden="true"></i> Search Results </h2>
+        <h2 class="resultsTitle">Search Results <i class="fa fa-search" aria-hidden="true"></i></h2>
         <ul class="js-results-list-container resultsList">
-          <!-- código html para resultado de películas  -->
+          <!-- aquí se pintará con JS el código de los resultados de la búsqueda  -->
         </ul>
-
-        <!-- ELIMINAR EL ELEMENTO IMG -->
       </section>
     </div>
     <script type="text/javascript" src="./main.js"></script>
