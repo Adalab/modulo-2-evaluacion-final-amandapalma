@@ -8,8 +8,9 @@
 
 ARRAYS CON LOS QUE VAMOS A TRABAJAR PARA LOS BLOQUES 'FAVORITES' Y 'RESULTS'
 
-let  films = [];
-let  favorites = [];
+``let  films = [];``
+
+``let  favorites = [];``
 
   
 **PETICION AL SERVIDOR**
@@ -51,7 +52,8 @@ Necesitamos:
     };```
 
 --
- **```paintResults```(3) (6) (8)**: Función para pintar los resultados de la búsqueda, y establecer el estilo correspondiente al item de la película ('default' o 'favorite'), cuando se produce el evento 'click' sobre ese item.
+
+**```paintResults```(3) (6) (8)**: Función para pintar los resultados de la búsqueda, y establecer el estilo correspondiente al item de la película ('default' o 'favorite'), cuando se produce el evento 'click' sobre ese item.
 
 Necesitamos:
 3. Selector del elemento 'ul' de la sección 'results' del DOM.
@@ -91,7 +93,8 @@ Necesitamos:
     listenFilmClicks();
     };
 
-  --
+--
+
  **```listenSearchButton```(1)**: Función listener para escuchar el evento 'click' en el botón 'search' y ejecutar la correspondiente función manejadora ```handleSearch```.
 
 Necesitamoremos un selector del botón 'search' en el DOM
@@ -104,6 +107,7 @@ Necesitamoremos un selector del botón 'search' en el DOM
 
   
 --
+
 **```handleSearch```**: Función manejadora de la búsqueda que llama a la función ```getDataFromApi```.
 1.Para que no se envíe el formulario por defecto necesitamos prevenir dicho envío con un ```preventDefault```.
 
@@ -137,7 +141,8 @@ C) Se guarda ese item en LocalStorage.
     }
     };
 
---  
+--
+
 **```addOrRemoveFavorite```(5)**: El id del item es un identificador único, así que necesitamos obtenerlo para localizar ese item que ha sido 'clickado'.
 
 Si el id del item 'clickado' es el mismo que el de alguno dentro de ```favorites``` se elimina de ese array, y si no es el mismo, se añade. El método funcional `findIndex` trabaja con los índices de los items. Cuando develve -1, quiere decir que ese elemento no se ha encontrado dentro del array. Pintaríamos con esta nueva versión de los datos en ```favorites```.
@@ -166,7 +171,9 @@ const  foundedFavoriteIndex = favorites.findIndex(
     paintFavorites();
     paintResults();
     };
+    
 --
+
 **```paintFavorites```(6) (8)** : Función para pintar los items marcados como favoritos en el listado de favotitos, cuando se produce el evento 'click' sobre ese item.
 Necesitamos:
 
@@ -211,7 +218,8 @@ Necesitamos:
     };
 
 --
-  **```getLocalStorage```**
+
+**```getLocalStorage```**
 JSON.parse cambia a formato JSON los datos que previamente habíamos transformado en string para poder almacenalros en LocalSotrage.
 
     const  getLocalStorage = () => {
@@ -226,14 +234,16 @@ JSON.parse cambia a formato JSON los datos que previamente habíamos transformad
 **FASE 5: BORRAR FAVORITOS**
 A. Eliminar todos los elementos de la lista favoritos al clickar sobre el botón 'delete all favorites'
 
- **```listenRemoveAll```(7)**:  Función para escuchar el botón 'delete all favorites' para, cuando se poruzca el evento 'click' sobre él, se ejecute la función ```removeAll```. Esta última, elimina los datos del localStorage asignando a la variable ```favorites``` un array vacío, y por tanto esos datos también se eliminarían del listado 'favorites' y 'results' cuando volvemos a pintarlos.
+**```listenRemoveAll```(7)**:  Función para escuchar el botón 'delete all favorites' para, cuando se poruzca el evento 'click' sobre él, se ejecute la función ```removeAll```. Esta última, elimina los datos del localStorage asignando a la variable ```favorites``` un array vacío, y por tanto esos datos también se eliminarían del listado 'favorites' y 'results' cuando volvemos a pintarlos.
 
     const  listenRemoveAll = () => {
     const  resetBtn = document.querySelector(".js-reset-favorites");
     resetBtn.addEventListener("click", removeAll);
     };
-    --
- **```RemoveAll```**
+    
+--
+
+**```RemoveAll```**
 
     const  removeAll = () => {
     favorites = [];
@@ -245,7 +255,7 @@ A. Eliminar todos los elementos de la lista favoritos al clickar sobre el botón
   
 B. Eliminar un elemento de la lista ``favorites`` al 'clickar' sobre el icono ```closeIcon```.
 
- **```listenCloseIcon```(7)**: Función listener para escuchar el evento 'click' sobre 
+**```listenCloseIcon```(7)**: Función listener para escuchar el evento 'click' sobre 
  ```closeIcon```.
  
  Necesitamos:
@@ -261,7 +271,7 @@ B. Eliminar un elemento de la lista ``favorites`` al 'clickar' sobre el icono ``
     }
     };
 --
-```removeFavorite```: Esta función localiza el elemento 'clickado' a través de su ```closeIcon``` (ev.target.id) mediante su id, y lo compara con los elementos del array ```favorites```. Si los id coinciden, se eliminará el elemento de dicho array.
+**```removeFavorite```**: Esta función localiza el elemento 'clickado' a través de su ```closeIcon``` (ev.target.id) mediante su id, y lo compara con los elementos del array ```favorites```. Si los id coinciden, se eliminará el elemento de dicho array.
 
 const  removeFavorite = (ev) => {
 const  closeIconClickedId = parseInt(ev.target.id);
@@ -277,6 +287,7 @@ const  foundedFavoriteIndex = favorites.findIndex(
 
   
 --
+
 **AL ARRANCAR LA PAGINA (0)**  necesitamos obtener los datos del 'LocalStorage' para conservar pintados los items que hemos marcado como favoritos cada vez que se refresque la página.
 
 Tambien necesitamos escuchar el botón 'searchButton'. Sobre este se realizará la primera acción posible, la primera vez que se entra en la página.
@@ -284,10 +295,11 @@ Tambien necesitamos escuchar el botón 'searchButton'. Sobre este se realizará 
 getLocalStorage();
 listenSearchButton();
 
-  ----------------------
+----------------------
+
 **FASE 6: MAQUETACION (VER EL FICHERO STYLES, QUE CONTIENE RESET.CSS Y STYLES.CSS)**
 
-Hemos creado una identidad a nuestra aplicación web creando un logotipo y un nombre personalizado. 'Tarsier Series Seracher'. 
+Hemos creado una identidad para nuestra aplicación web creando un logotipo y un nombre personalizado. 'Tarsier Series Seracher'. 
 
 Además hemos creado una imagen por defecto para las series que no tengan imagen establecida utilizando el logotipo.
 
