@@ -1,6 +1,6 @@
 "use strict";
 
-//ARRAYS
+//ARRAYS CON LOS QUE VAMOS A TRABAJAR PARA LOS BLOQUES 'FAVORITES' Y 'RESULTS'
 
 let films = [];
 let favorites = [];
@@ -8,12 +8,12 @@ let favorites = [];
 //FASE 1: CREAR ESTRUCTURA HTML (VER INDEX.HTML)
 //FASE 2: OBTENER DATOS DEL API Y PINTAR RESULTADOS DE LA BUSQUEDA
 
-// (2) Petición al API, para obtener los datos de las películas. Asignamos los datos a la variable 'films', que previamente hemos declarado a nivel global.
+// (2) Petición al API, para obtener los datos de las películas. Asignamos los datos a la variable ```films```, que previamente hemos declarado a nivel global. Además hemos creado un objeto que recoge únicamente los datos que vamos a necesitar (imagen, nombre e id), y será ese objeto lo que guardemos en la variable.
 
 function getDataFromApi() {
   // Necesitamos:
   //1. Selector del campo de búsqueda en el DOM
-  //2. Obtener el valor de ese campo para filtrar la petición al servidor en función de los datos introducidos por el usuario en la búsqueda. Ese valor lo guardamos en la constante constante searchValue.
+  //2. Obtener el valor de ese campo para filtrar la petición al servidor en función de los datos introducidos por el usuario en la búsqueda. Ese valor lo guardamos en la constante ```searchValue```.
   const searchField = document.querySelector(".js-searchField");
   const searchValue = searchField.value;
 
@@ -39,20 +39,20 @@ function getDataFromApi() {
     });
 }
 
-// (3) Función para pintar los resultados de la búsqueda, y establecer el estilo correspondiente al item de la película, cuando se produce el evento 'click' sobre ella.
+// (3) (6) (8) Función para pintar los resultados de la búsqueda, y establecer el estilo correspondiente al item de la película ('default' o 'favorite'), cuando se produce el evento 'click' sobre ella.
 
 function paintResults() {
   let codeHTML = "";
   let favClass;
 
-  // Selector del elemento <ul> de la sección 'results'del DOM
+  // Selector del elemento <ul> de la sección 'results' del DOM.
   const resultsList = document.querySelector(".js-results-list-container");
 
-  //Reseteo cualquier código que hubiese previamente para que los resultados de la búsqueda no se dupliquen
+  //Reseteamos cualquier código que hubiese previamente para que los resultados de la búsqueda no se dupliquen.
   resultsList.innerHTML = "";
 
   for (const film of films) {
-    //Comprobamos si el item está guardado en nuestro array favoritos. Si no está, se le aplica el estilo 'default'. Si sí está, se le aplica el estilo de 'favorito'.
+    //Comprobamos si el item está guardado en nuestro array ```favorites```. Si no está, se le aplica el estilo 'default' a través de la variable ```favClass```. Si sí está, se le aplica el estilo de 'favorite'.
     const isFavorite = favorites.find((favorite) => favorite.id === film.id);
 
     if (isFavorite) {
@@ -72,19 +72,19 @@ function paintResults() {
     codeHTML += `</li>`;
   }
 
-  // pintamos dentro del elemento <ul> del DOM todo el código que hemos definido y guardado en codeHTML
+  // Pintamos dentro del elemento <ul> del DOM todo el código que hemos definido y guardado en la variable ```codeHTML```.
   resultsList.innerHTML = codeHTML;
 
   listenFilmClicks();
 }
 
-//(1) Función listener para escuchar el evento 'click' en el botón search.
+//(1) Función listener para escuchar el evento 'click' en el botón 'search' y ejecutar la correspondiente función manejadora ```handleSearch```.
 
 //Selector del botón search en el DOM
 const searchButton = document.querySelector(".js-searchButton");
 searchButton.addEventListener("click", handleSearch);
 
-// función manejadora de la búsqueda
+// función manejadora de la búsqueda que llama a la función ```getDataFromApi```. Para que no se envíe el formulario por defecto necesitamos prevenir dicho envío con un ```preventDefault```.
 function handleSearch(ev) {
   ev.preventDefault();
 
@@ -94,16 +94,16 @@ function handleSearch(ev) {
 //----------------------
 //FASE 3: MARCAR COMO FAVORITO
 
-// Cuando se marca una película como favorita:
-// 1) Color de fondo y texto cambian en el item de lista de resultados
-// 2) Se pinta la película en la lista de favoritos
-// 3) Se guarda esa película en LocalStorage
+// (4) Cuando se hace 'click' sobre una película la marcamos como favorita y suceden varias acciones:
+// 1) El color de fondo y texto cambian en el item de lista de resultados.
+// 2) Se pinta la película en la lista de favoritos.
+// 3) Se guarda esa película en LocalStorage.
 
 function listenFilmClicks() {
-  //Selector de todos los elementos resultantes de la búsqueda
+  //Selector de todos los elementos resultantes de la búsqueda.
   const filmItems = document.querySelectorAll(".js-result-item");
 
-  // Función Listener, que recorre el array de resultados y escucha el evento 'click' en cada elemento para ejecutar a la función que añade ese elemento a favoritos (handleResultsClick)
+  // Función Listener, que recorre el array de resultados y escucha el evento 'click' en cada item para ejecutar a la función ```addOrRemoveFavorite``` que se encarga de añadir o eliminar del array ```favorites``` ese item sobre el que se ha efectuado el evento 'click'.
   for (const filmItem of filmItems) {
     filmItem.addEventListener("click", addOrRemoveFavorite);
   }
@@ -111,9 +111,12 @@ function listenFilmClicks() {
 
 //=============================
 
-//El id de la película es un identificador único, así que necesitamos obtenerlo para localizar la película clickada.En el array, el id es un tipo de dato numérico, por eso debemos cambiar su formato a número con ParseInt.
-//Si el id de la película clicada es el mismo que el de alguna película en favoritos, se elimina esa película del array favoritos
-//Si el id de la película clicada no es el mismo, se añade esa película al array favoritos.
+// (5) El id de la película es un identificador único, así que necesitamos obtenerlo para localizar el item que ha sido 'clickado'. En el array, el id es un tipo de dato numérico, por eso debemos cambiar el formato del id del item a tipo de dato número, con ParseInt.
+//Si el id del item 'clickado' es el mismo que el de alguno dentro de ```favorites``` se elimina de ese array, y si no es el mismo, se añade. El método funcional `findIndex` trabaja con los índices de los items. Cuando develve -1, quiere decir que ese elemento no se ha encontrado dentro del array. Pintaríamos con esta nueva versión de los datos en ```favorites```.
+
+//además al volver a pintar dichos items (```paintResults```)se eliminaría la clase 'default' y se añadiría la clase 'favorite' o viceversa, a dicho item en 'films'.
+
+//También necesitaríamos posteriormente guardar esta nueva versión datos en LocalStorage.
 
 function addOrRemoveFavorite(ev) {
   const clickedId = parseInt(ev.currentTarget.id);
@@ -124,29 +127,26 @@ function addOrRemoveFavorite(ev) {
   if (foundedFavoriteIndex === -1) {
     const film = films.find((film) => film.id === clickedId);
     favorites.push(film);
-
-    //además elimina la clase default' y añade la clase 'favorite'  del <li> de results
   } else {
     favorites.splice(foundedFavoriteIndex, 1);
-    //además elimina la clase 'favorite' y añade la clase 'default' del <li> de results
   }
   setLocalStorage();
   paintFavorites();
   paintResults();
-  // closeIconListener();
 }
 
+//(6) (8) //También serían ``` setLocalStorage``` y de nuevo ```paintResults```
 const paintFavorites = () => {
   let codeHTML = "";
-  let favClass;
 
-  // Selector del elemento <ul> de la sección 'favorites' del DOM
+  // Selector del elemento <ul> de la sección 'favorites' del DOM.
   const favoritesList = document.querySelector(".js-favorites-list-container");
 
+  //Reseteamos cualquier código previo para no duplicar elementos.
   favoritesList.innerHTML = "";
 
   for (const favorite of favorites) {
-    //Recorremos el array favorites y pintamos el código html relativo a cada item
+    //Recorremos el array favorites y pintamos el código html relativo a cada item.
     codeHTML += `<li class="js-favorite-item favoriteItem" id= "${favorite.id}">`;
     // codeHTML += `<div class = "js-favorite-item-card itemCard" >`;
     codeHTML += `<div class ="favItemImg">`;
@@ -171,7 +171,7 @@ const paintFavorites = () => {
 
 //LOCAL STORAGE
 
-//En localStorage solo podemos guardar datos de tipo primitivo. Como en este caso necesitamos guardar un array, debemos convertirlo a una cadena para poder guardarlo.
+// (6) (8) En localStorage solo podemos guardar datos de tipo primitivo. Como en este caso necesitamos guardar un array, debemos convertirlo previamente a string para poder almacenarlo.
 
 const setLocalStorage = () => {
   const FavoritesString = JSON.stringify(favorites);
@@ -189,13 +189,12 @@ const getLocalStorage = () => {
 
 //FASE 5: BORRAR FAVORITOS
 
-// Eliminar todos los elementos de la lista favoritos al clickar sobre el botón 'delete all favorites'
+// 1. Eliminar todos los elementos de la lista favoritos al clickar sobre el botón 'delete all favorites'
 
-// Borrar los datos del localStorage y asigno a la variable 'favorites' un array vacío.
+//  (7)  Escuchamos el botón 'delete all favorites' para, cuando se poruzca el evento 'click' sobre él se ejecute la función ```removeAll```. Esta última, elimina los datos del localStorage asignando a la variable ```favorites``` un array vacío, y por tanto esos datos también se eliminarían del listado `favorites` y `results` cuando volvemos a pintarlos.
 const listenRemoveAll = () => {
   const resetBtn = document.querySelector(".js-reset-favorites");
   resetBtn.addEventListener("click", removeAll);
-  // console.log("listenRemoveAll funciona");
 };
 
 const removeAll = () => {
@@ -206,25 +205,24 @@ const removeAll = () => {
   paintResults();
 };
 
-// Eliminar un elemento de la lista de favoritos al clickar sobre el icono 'cross'
+// 2. Eliminar un elemento de la lista `favorites`` al 'clickar' sobre el icono ```closeIcon```.
 
-//Función listener para escuchar el evento 'click' sobre closeIcon
+// (7) Función listener para escuchar el evento 'click' sobre ```closeIcon```.
 function ListenCloseIcon() {
-  //Selector de todos los close icons del DOM
+  //Selector de todos los ```closeIcon``` del DOM.
   const closeIcons = document.querySelectorAll(".js-favorite-closeIcon");
-
+  //Con `for of` recorremos el array favoritos para escuchar el evento 'click' sobre cada uno de los items, mediante el listener ```ListenCloseIcon```. Este listener ejecuta la función ```removeFavorite``` una vez se haya producido el evento.
   for (const closeIcon of closeIcons) {
     closeIcon.addEventListener("click", removeFavorite);
   }
 }
-
+// Esta función localiza el elemento 'clickado' a través de su ```closeIcon``` (ev.target.id) mediante su id, y lo compara con los elementos del array ```favorites```. Si los id coinciden, se eliminará el elemento de dicho array.
 function removeFavorite(ev) {
-  console.log("removeFavorite funciona");
   const closeIconClickedId = parseInt(ev.target.id);
   const foundedFavoriteIndex = favorites.findIndex(
     (favorite) => favorite.id === closeIconClickedId
   );
-  console.log(closeIconClickedId);
+
   favorites.splice(foundedFavoriteIndex, 1);
 
   paintFavorites();
@@ -232,5 +230,5 @@ function removeFavorite(ev) {
   paintResults();
 }
 
-//Al arrancar la página
+// (0) Al arrancar la página necesitamos obtener los datos del 'LocalStorage' para conservar pintados los elementos que hemos marcado como favoritos cada vez que se refresque la página.
 getLocalStorage();
