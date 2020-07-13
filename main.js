@@ -10,7 +10,7 @@ let favorites = [];
 
 // (2) Petición al API, para obtener los datos de las películas. Asignamos los datos a la variable ```films```, que previamente hemos declarado a nivel global. Además hemos creado un objeto que recoge únicamente los datos que vamos a necesitar (imagen, nombre e id), y será ese objeto lo que guardemos en la variable.
 
-function getDataFromApi() {
+const getDataFromApi = () => {
   // Necesitamos:
   //1. Selector del campo de búsqueda en el DOM
   //2. Obtener el valor de ese campo para filtrar la petición al servidor en función de los datos introducidos por el usuario en la búsqueda. Ese valor lo guardamos en la constante ```searchValue```.
@@ -37,11 +37,11 @@ function getDataFromApi() {
       }
       paintResults();
     });
-}
+};
 
 // (3) (6) (8) Función para pintar los resultados de la búsqueda, y establecer el estilo correspondiente al item de la película ('default' o 'favorite'), cuando se produce el evento 'click' sobre ella.
 
-function paintResults() {
+const paintResults = () => {
   let codeHTML = "";
   let favClass;
 
@@ -76,13 +76,15 @@ function paintResults() {
   resultsList.innerHTML = codeHTML;
 
   listenFilmClicks();
-}
+};
 
 //(1) Función listener para escuchar el evento 'click' en el botón 'search' y ejecutar la correspondiente función manejadora ```handleSearch```.
 
 //Selector del botón search en el DOM
-const searchButton = document.querySelector(".js-searchButton");
-searchButton.addEventListener("click", handleSearch);
+const listenSearchButton = () => {
+  const searchButton = document.querySelector(".js-searchButton");
+  searchButton.addEventListener("click", handleSearch);
+};
 
 // función manejadora de la búsqueda que llama a la función ```getDataFromApi```. Para que no se envíe el formulario por defecto necesitamos prevenir dicho envío con un ```preventDefault```.
 function handleSearch(ev) {
@@ -99,7 +101,7 @@ function handleSearch(ev) {
 // 2) Se pinta la película en la lista de favoritos.
 // 3) Se guarda esa película en LocalStorage.
 
-function listenFilmClicks() {
+const listenFilmClicks = () => {
   //Selector de todos los elementos resultantes de la búsqueda.
   const filmItems = document.querySelectorAll(".js-result-item");
 
@@ -107,7 +109,7 @@ function listenFilmClicks() {
   for (const filmItem of filmItems) {
     filmItem.addEventListener("click", addOrRemoveFavorite);
   }
-}
+};
 
 //=============================
 
@@ -118,7 +120,7 @@ function listenFilmClicks() {
 
 //También necesitaríamos posteriormente guardar esta nueva versión datos en LocalStorage.
 
-function addOrRemoveFavorite(ev) {
+const addOrRemoveFavorite = (ev) => {
   const clickedId = parseInt(ev.currentTarget.id);
   const foundedFavoriteIndex = favorites.findIndex(
     (favorite) => favorite.id === clickedId
@@ -133,7 +135,7 @@ function addOrRemoveFavorite(ev) {
   setLocalStorage();
   paintFavorites();
   paintResults();
-}
+};
 
 //(6) (8) //También serían ``` setLocalStorage``` y de nuevo ```paintResults```
 const paintFavorites = () => {
@@ -164,7 +166,7 @@ const paintFavorites = () => {
 
   listenFilmClicks();
   listenRemoveAll();
-  ListenCloseIcon();
+  listenCloseIcon();
 };
 
 //FASE 4: ALMACENAR LISTA DE FAVORITOS EN LOCALSTORAGE
@@ -174,15 +176,15 @@ const paintFavorites = () => {
 // (6) (8) En localStorage solo podemos guardar datos de tipo primitivo. Como en este caso necesitamos guardar un array, debemos convertirlo previamente a string para poder almacenarlo.
 
 const setLocalStorage = () => {
-  const FavoritesString = JSON.stringify(favorites);
-  localStorage.setItem("favorite films", FavoritesString);
+  const favoritesString = JSON.stringify(favorites);
+  localStorage.setItem("favorite films", favoritesString);
 };
 
 // JSON.parse cambia a formato JSON los datos que previamente habíamos transformado en string para poder almacenalros en LocalSotrage.
 const getLocalStorage = () => {
-  const FavoritesString = localStorage.getItem("favorite films");
-  if (FavoritesString !== null) {
-    favorites = JSON.parse(FavoritesString);
+  const favoritesString = localStorage.getItem("favorite films");
+  if (favoritesString !== null) {
+    favorites = JSON.parse(favoritesString);
   }
   paintFavorites();
 };
@@ -208,16 +210,16 @@ const removeAll = () => {
 // 2. Eliminar un elemento de la lista `favorites`` al 'clickar' sobre el icono ```closeIcon```.
 
 // (7) Función listener para escuchar el evento 'click' sobre ```closeIcon```.
-function ListenCloseIcon() {
+const listenCloseIcon = () => {
   //Selector de todos los ```closeIcon``` del DOM.
   const closeIcons = document.querySelectorAll(".js-favorite-closeIcon");
-  //Con `for of` recorremos el array favoritos para escuchar el evento 'click' sobre cada uno de los items, mediante el listener ```ListenCloseIcon```. Este listener ejecuta la función ```removeFavorite``` una vez se haya producido el evento.
+  //Con `for of` recorremos el array favoritos para escuchar el evento 'click' sobre cada uno de los items, mediante el listener ```listenCloseIcon```. Este listener ejecuta la función ```removeFavorite``` una vez se haya producido el evento.
   for (const closeIcon of closeIcons) {
     closeIcon.addEventListener("click", removeFavorite);
   }
-}
+};
 // Esta función localiza el elemento 'clickado' a través de su ```closeIcon``` (ev.target.id) mediante su id, y lo compara con los elementos del array ```favorites```. Si los id coinciden, se eliminará el elemento de dicho array.
-function removeFavorite(ev) {
+const removeFavorite = (ev) => {
   const closeIconClickedId = parseInt(ev.target.id);
   const foundedFavoriteIndex = favorites.findIndex(
     (favorite) => favorite.id === closeIconClickedId
@@ -228,7 +230,8 @@ function removeFavorite(ev) {
   paintFavorites();
   setLocalStorage();
   paintResults();
-}
+};
 
-// (0) Al arrancar la página necesitamos obtener los datos del 'LocalStorage' para conservar pintados los elementos que hemos marcado como favoritos cada vez que se refresque la página.
+// (0) Al arrancar la página necesitamos obtener los datos del 'LocalStorage' para conservar pintados los elementos que hemos marcado como favoritos cada vez que se refresque la página. Y necesitamos escuchar el botón 'searchButton', sobre este se realizará la primera acción posible, la primera vez que se entra en la página.
 getLocalStorage();
+listenSearchButton();
